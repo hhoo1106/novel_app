@@ -39,12 +39,15 @@
         </div>
     </footer>
 
-    <div id="project-modal" class="modal hidden">
-        <div class="modal-content">
-            <h2>作品と目次</h2>
-            <button id="new-project-btn" class="action-btn primary" style="width:100%; margin-bottom:15px;">＋ 新規作成</button>
+   <div id="drawer-backdrop" class="drawer-backdrop hidden"></div>
+    <div id="project-modal" class="drawer hidden">
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:15px; border-bottom:1px solid var(--border-color);">
+            <h2 style="font-size:18px; margin:0;">作品一覧</h2>
+            <button id="close-project-btn" class="icon-btn">✕</button>
+        </div>
+        <div style="padding:15px; overflow-y:auto; flex:1;">
+            <button id="new-project-btn" class="action-btn primary" style="width:100%; margin-bottom:15px; padding:12px;">＋ 新規作成</button>
             <ul id="project-list" class="list-view"></ul>
-            <button id="close-project-btn" class="close-btn">閉じる</button>
         </div>
     </div>
 
