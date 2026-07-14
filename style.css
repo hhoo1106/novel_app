@@ -78,3 +78,8 @@ body.editor-focused #project-title { display: none; }
 .settings-section { margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px; }
 .settings-section label { font-size: 14px; font-weight: bold; }
 .settings-section select, .settings-section input { padding: 8px; border-radius: 5px; border: 1px solid var(--btn-border); background: var(--bg-color); color: var(--text-color); }
+/* --- ここから追記 --- */
+.drawer-backdrop { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--modal-bg); z-index: 150; transition: opacity 0.3s; }
+.drawer-backdrop.hidden { opacity: 0; pointer-events: none; }
+.drawer { position: fixed; top: 0; left: 0; width: 80%; max-width: 320px; height: 100%; background-color: var(--sheet-bg); z-index: 200; display: flex; flex-direction: column; transition: transform 0.3s ease; box-shadow: 2px 0 10px rgba(0,0,0,0.1); }
+.drawer.hidden { transform: translateX(-100%); }
