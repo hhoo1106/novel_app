@@ -117,58 +117,41 @@ document.getElementById('marker-btn').addEventListener('mousedown', (e) => {
 });
 
 document.getElementById('menu-btn').onclick = () => {
-    if(!db) return alert("データベースを準備しています．一瞬待ってから再度タップしてください．");
+    if(!db) return alert("データベース準備中です．");
     const list = document.getElementById('project-list'); list.innerHTML = '';
-    const navMode = document.getElementById('nav-mode-select').value;
     
     db.transaction(['projects'], 'readonly').objectStore('projects').getAll().onsuccess = (e) => {
+        // 更新日時の新しい順に並び替え
         e.target.result.sort((a, b) => b.updatedAt - a.updatedAt).forEach(proj => {
             const li = document.createElement('li');
-            const mainBtn = document.createElement('button');
-            mainBtn.className = 'list-item'; 
-            mainBtn.innerHTML = `<strong>${proj.title}</strong> <span>${(proj.content || '').length}字 ▽</span>`;
+            const btn = document.createElement('button');
+            btn.className = 'list-item'; 
+            // タイトル（左）と文字数（右）を配置
+            btn.innerHTML = `<span style="font-weight:bold; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:70%;">${proj.title}</span> <span style="font-size:12px; color:var(--text-light);">${(proj.content || '').length}字</span>`;
             
-            const subList = document.createElement('ul'); subList.style.display = 'none';
-
-            mainBtn.onclick = () => {
-                subList.style.display = subList.style.display === 'none' ? 'block' : 'none';
+            // タップ時の処理（直接作品を開く）
+            btn.onclick = () => {
+                currentProjectId = proj.id; 
+                titleInput.value = proj.title; 
+                editor.innerText = proj.content; 
+                captionMemo.value = proj.caption || '';
+                updateCharCount(); 
+                document.getElementById('project-modal').classList.add('hidden');
+                document.getElementById('drawer-backdrop').classList.add('hidden');
             };
-            li.appendChild(mainBtn);
-
-            const allLi = document.createElement('li');
-            const allBtn = document.createElement('button');
-            allBtn.className = 'list-item sub-item';
-            allBtn.style.fontWeight = 'bold';
-            allBtn.textContent = '➔ この作品を開く（全文ロード）';
-            allBtn.onclick = () => {
-                currentProjectId = proj.id; titleInput.value = proj.title; 
-                editor.innerText = proj.content; captionMemo.value = proj.caption || '';
-                updateCharCount(); document.getElementById('project-modal').classList.add('hidden');
-            };
-            subList.appendChild(allLi).appendChild(allBtn);
-
-            const text = proj.content || '';
-            let regex = navMode === 'chapter' ? /\[chapter:(.*?)\]/g : /\[newpage\]/g;
-            let match; let pageCount = 1;
-
-            while ((match = regex.exec(text)) !== null) {
-                const subBtn = document.createElement('button'); subBtn.className = 'list-item sub-item';
-                let label = navMode === 'chapter' ? match[1] : `${pageCount}ページ (${text.substring(match.index + 9, match.index + 20)}...)`;
-                const targetIndex = match.index;
-                
-                subBtn.textContent = label;
-                subBtn.onclick = () => {
-                    currentProjectId = proj.id; titleInput.value = proj.title; 
-                    editor.innerText = proj.content; captionMemo.value = proj.caption || '';
-                    updateCharCount(); document.getElementById('project-modal').classList.add('hidden');
-                    setTimeout(() => jumpToIndex(targetIndex), 100);
-                };
-                subList.appendChild(subBtn); pageCount++;
-            }
-            li.appendChild(subList); list.appendChild(li);
+            li.appendChild(btn);
+            list.appendChild(li);
         });
     };
+    // メニューを表示
     document.getElementById('project-modal').classList.remove('hidden');
+    document.getElementById('drawer-backdrop').classList.remove('hidden');
+};
+
+// 閉じるボタン，または背景の黒い部分をタップで閉じる
+document.getElementById('close-project-btn').onclick = document.getElementById('drawer-backdrop').onclick = () => {
+    document.getElementById('project-modal').classList.add('hidden');
+    document.getElementById('drawer-backdrop').classList.add('hidden');
 };
 
 const jumpToIndex = (index) => {
