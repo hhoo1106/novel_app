@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Novel Memo Pro</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css?v=6">
+</head>
+<body>
+    <header>
+        <button id="menu-btn" class="icon-btn">☰</button>
+        <input type="text" id="project-title" placeholder="無題の作品">
+        <button id="manual-save-btn" class="tool-btn" style="background:#34c759; color:white; border:none; margin-right:10px; font-weight:bold; padding:5px 12px; border-radius:4px; cursor:pointer;">保存</button>
+        <div id="char-count-wrap" title="タップで詳細表示">
+            <span id="char-count">0</span> 文字
+        </div>
+        <button id="history-btn" class="icon-btn">🕒</button>
+    </header>
+
+    <div id="editor-container">
+        <div id="editor" contenteditable="true" spellcheck="false" placeholder="ここに物語を紡ぐ..."></div>
+    </div>
+
+    <footer>
+        <div class="symbol-tools">
+            <button class="tool-btn undo-redo" onclick="document.execCommand('undo');" title="元に戻す">↩️</button>
+            <button class="tool-btn undo-redo" onclick="document.execCommand('redo');" title="やり直す">↪️</button>
+            <div class="vertical-divider"></div>
+            <button class="tool-btn pixiv-btn" data-insert="[chapter:]" data-offset="9">章題</button>
+            <button class="tool-btn pixiv-btn" data-insert="[newpage]" data-offset="9">改頁</button>
+            <button class="tool-btn pixiv-btn" data-insert="[[rb: > ]]" data-offset="5">ルビ</button>
+            <button class="tool-btn pixiv-btn" data-insert="[[em:]]" data-offset="5">傍点</button>
+            <button class="tool-btn pixiv-btn" data-insert="……" data-offset="2">……</button>
+            <button class="tool-btn pixiv-btn" data-insert="――" data-offset="2">――</button>
+            <button class="tool-btn marker-btn" id="marker-btn" title="ハイライト">🖍</button>
+            <div style="flex:1;"></div>
+            <button id="settings-btn" class="icon-btn" title="設定">⚙️</button>
+        </div>
+    </footer>
+
+    <div id="project-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2>作品と目次</h2>
+            <button id="new-project-btn" class="action-btn primary" style="width:100%; margin-bottom:15px;">＋ 新規作成</button>
+            <ul id="project-list" class="list-view"></ul>
+            <button id="close-project-btn" class="close-btn">閉じる</button>
+        </div>
+    </div>
+
+    <div id="stats-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2>詳細データ ＆ キャプション</h2>
+            <div id="stats-content" style="margin-bottom: 15px; font-size: 14px; line-height: 1.8;"></div>
+            <h3>キャプション（pixiv投稿用メモ）</h3>
+            <textarea id="caption-memo" placeholder="作品のあらすじや注意書きをメモできます..." style="width:100%; height:120px; padding:10px; border-radius:5px; border:1px solid var(--border-color); resize:none;"></textarea>
+            <p style="text-align:right; font-size:12px; color:var(--text-light); margin-top:5px;">※オートセーブされます</p>
+            <button id="close-stats-btn" class="close-btn" style="margin-top:15px;">閉じる</button>
+        </div>
+    </div>
+
+    <div id="history-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2>履歴から復元</h2>
+            <ul id="history-list" class="list-view"></ul>
+            <button id="close-history-btn" class="close-btn">閉じる</button>
+        </div>
+    </div>
+
+    <div id="settings-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2>設定</h2>
+            <div class="settings-section">
+                <label>目次（ジャンプ）の基準</label>
+                <select id="nav-mode-select">
+                    <option value="chapter">章タイトル [chapter:]</option>
+                    <option value="newpage">改ページ [newpage]</option>
+                </select>
+            </div>
+            <div class="settings-section">
+                <label>テーマ</label>
+                <select id="theme-select"><option value="light">ライト</option><option value="dark">ダーク</option></select>
+            </div>
+            <div class="settings-section">
+                <button id="backup-btn" class="action-btn secondary">バックアップを保存 (.json)</button>
+                <button id="restore-btn" class="action-btn secondary">バックアップを復元</button>
+                <input type="file" id="restore-file-input" accept=".json" style="display:none;">
+            </div>
+            <button id="close-settings-btn" class="close-btn">閉じる</button>
+        </div>
+    </div>
+
+    <script src="script.js?v=6"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js?v=6');
+        });
+      }
+    </script>
+</body>
+</html>
